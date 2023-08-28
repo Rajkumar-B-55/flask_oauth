@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>Title</title>
+    <style>
+        body {
+            font-family: "Source Sans Pro", sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        .container {
+            box-sizing: border-box;
+            width: 400px;
+            padding: 40px;
+            margin: auto;
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .container h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .container label {
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 6px;
+        }
+
+        .container input[type="text"],
+        .container input[type="email"],
+        .container input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        .container button[type="submit"] {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background-color: #3498db;
+            border: none;
+            border-radius: 5px;
+            color: #ffffff;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .container button[type="submit"]:hover {
+            background-color: #2980b9;
+        }
+
+        .msg {
+            font-size: 14px;
+            color: #e74c3c;
+            margin-top: 10px;
+        }
+
+        .links {
+            text-align: center;
+            font-size: 15px;
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Registration form</h1>
+    <form action="/register" method="post">
+        <label>Firstname:</label>
+        <input name="firstname" type="text" placeholder="Your First name here..." required="">
+        <label>Lastname:</label>
+        <input name="lastname" type="text" placeholder="Your Last name here..." required="">
+        <label>Email:</label>
+        <input name="email" type="email" placeholder="Your Email here..." value="" required="">
+        <label>Password:</label>
+        <input name="password" type="password" placeholder="Your Secret here..." required="">
+        <div class="msg">{{msg}}</div>
+        <button type="submit">Sign up</button>
+    </form>
+</div>
+</body>
+</html>
