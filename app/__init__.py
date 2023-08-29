@@ -19,6 +19,11 @@ class AppFactory:
     def create_app(cls):
         try:
             app = Flask(__name__)
+
+            app.config.update({
+                                  'OAUTHLIB_INSECURE_TRANSPORT': '1'})  # this is to set our environment to https
+            # because OAuth 2.0 only supports https environments
+
             cls.bcrypt = Bcrypt(app)
 
             # blueprint registration

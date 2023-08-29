@@ -11,7 +11,8 @@ class GoogleSvc:
     CLIENT_ID = config.GOOGLE_CLIENT_ID
     CLIENT_SECRET = config.GOOGLE_CLIENT_SECRET
     REDIRECT_URI = config.GOOGLE_REDIRECT_URI
-    SCOPE = 'https://www.googleapis.com/auth/userinfo.email'
+    SCOPE = ['https://www.googleapis.com/auth/userinfo.profile', 'https://www.googleapis.com/auth/userinfo.email',
+             'openid']
 
     CLIENT = oauth2.WebApplicationClient(client_id=CLIENT_ID)
 
@@ -30,7 +31,7 @@ class GoogleSvc:
 
     @classmethod
     def generate_auth_url(cls):
-        auth_url, _ = cls.CLIENT.prepare_authorization_request(
+        auth_url, _, _ = cls.CLIENT.prepare_authorization_request(
             'https://accounts.google.com/o/oauth2/auth',
             redirect_url=cls.REDIRECT_URI,
             scope=[cls.SCOPE],
