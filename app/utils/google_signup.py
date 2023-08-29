@@ -1,5 +1,7 @@
 import json
+
 import requests
+from flask import request
 from oauthlib import oauth2
 
 from config import config
@@ -8,13 +10,15 @@ from config import config
 class GoogleSvc:
     CLIENT_ID = config.GOOGLE_CLIENT_ID
     CLIENT_SECRET = config.GOOGLE_CLIENT_SECRET
+    REDIRECT_URI = config.GOOGLE_REDIRECT_URI
+    SCOPE = 'https://www.googleapis.com/auth/userinfo.email'
+
+    CLIENT = oauth2.WebApplicationClient(client_id=CLIENT_ID)
 
     DATA = {
         'response_type': "code",  # this tells the auth server that we are invoking authorization workflow
-        'redirect_uri': config.GOOGLE_REDIRECT_URI,
-        # redirect URI https://console.developers.google.com/apis/credentials
-        'scope': 'https://www.googleapis.com/auth/userinfo.email',
-        # resource we are trying to access through Google API
+        'redirect_uri': REDIRECT_URI,
+        'scope': SCOPE,
         'client_id': CLIENT_ID,  # client ID from https://console.developers.google.com/apis/credentials
         'prompt': 'consent'}
 
@@ -23,7 +27,35 @@ class GoogleSvc:
         'token_gen': 'https://oauth2.googleapis.com/token',  # URI to generate token to access Google API
         'get_user_info': 'https://www.googleapis.com/oauth2/v3/userinfo'  # URI to get the user info
     }
-    CLIENT = oauth2.WebApplicationClient(client_id=CLIENT_ID)
+
+    @classmethod
+    def generate_auth_url(cls):
+        auth_url, _ = cls.CLIENT.prepare_authorization_request(
+            'https://accounts.google.com/o/oauth2/auth',
+            redirect_url=cls.REDIRECT_URI,
+            scope=[cls.SCOPE],
+        )
+        return auth_url
+
+    @classmethod
+    def user_info(cls, code):
+        token_url, _ = cls.CLIENT.prepare_token_request(
+            'https://oauth2.googleapis.com/token',
+            authorization_response=request.url,
+            redirect_url=cls.REDIRECT_URI,
+            code=code,
+        )
+        token_response = requests.post(
+            token_url,
+            auth=(cls.CLIENT_ID, cls.CLIENT_SECRET)
+        )
+        cls.CLIENT.parse_request_body_response(token_response.text)
+        uri, headers, _ = cls.CLIENT.add_token('https://www.googleapis.com/oauth2/v3/userinfo')
+        user_info_response = requests.get(uri, headers=headers)
+        return user_info_response.json()
+
+
+    # old code
 
     @classmethod
     def requested_uri(cls):

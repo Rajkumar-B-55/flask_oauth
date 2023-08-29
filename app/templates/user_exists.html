@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="UTF-8">
+    <title>User Exists</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            text-align: center;
+        }
+        .container {
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin: 100px auto;
+            max-width: 400px;
+        }
+        h1 {
+            color: #3498db;
+        }
+    </style>
+    <script>
+        setTimeout(function () {
+            window.location.href = '/v1/home'; // Redirect to the login page
+        }, 5000); // 5 seconds
+    </script>
+</head>
+<body>
+<div class="container">
+    <h1>Email Already Exists!</h1>
+    {% if email%}
+    <p>Welcome <strong>{{ email }}</strong></p>
+    {% endif %}
+    <p>You will be redirected to the login page in 5 seconds...</p> or <a href="/v1/home" target="_blank"> Click here</a>
+</div>
+</body>
+</html>

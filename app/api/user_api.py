@@ -1,12 +1,12 @@
 import logging
 
-from flask import Blueprint, url_for
+from flask import Blueprint
 from flask import make_response, jsonify, render_template, request, redirect
 
 from app.models.model import User
 from app.services.user_svc import UserService
-from app.utils.jwt_helper import access_token_generator, refresh_token_generator
 from app.utils.google_signup import GoogleSvc
+from app.utils.jwt_helper import access_token_generator, refresh_token_generator
 
 api_pb = Blueprint('api_bp', __name__, url_prefix='/v1', template_folder='D:/Oauth G&L/app/templates')
 # logger
@@ -44,37 +44,14 @@ def register():
                     new_user = UserService.add_user(first_name, last_name, email, password)
                     logger.info(new_user.email)
                     # return make_response(jsonify({'UserEmail': new_user.email, 'status': "Registered"}))
-                    return redirect('/v1/login')
+                    return render_template('register_success.html', email=email)
                 else:
                     # return make_response(f' user already exists with email: {email}', 209)
-                    return redirect('/v1/login')
+                    return render_template('user_exists.html', email=email)
         else:
-            redirect('/register')
-    except Exception as e:
-        return make_response(jsonify({'error': str(e)}))
-
-
-@api_pb.route('/google_sign_up', methods=['GET'])
-def g_login():
-    try:
-        return redirect(GoogleSvc.requested_uri())
-    except Exception as e:
-        return make_response(jsonify({'error': e.args[0]}), 500)
-
-
-@api_pb.route('/verify_google_sign_up', methods=['GET'])
-def verify_g_login():
-    try:
-        info = GoogleSvc.g_signup(request)
-        user = UserService.check_user_exists(info['email'])
-        if user:
-
-            return render_template('user.html')
-        else:
-
             return render_template('register.html')
     except Exception as e:
-        return make_response(jsonify({'error': e.args[0]}), 500)
+        return make_response(jsonify({'error': str(e)}))
 
 
 @api_pb.route('/login', methods=['POST'])
@@ -100,3 +77,39 @@ def user_login():
                 return redirect('/v1/home')
     except Exception as e:
         return make_response(jsonify({'error': e.args[0]}))
+
+
+@api_pb.route('/google_sign_up', methods=['GET'])
+def g_login():
+    try:
+        return redirect(GoogleSvc.requested_uri())
+    except Exception as e:
+        return make_response(jsonify({'error': e.args[0]}), 500)
+
+
+@api_pb.route('/verify_google_sign_up', methods=['GET'])
+def verify_g_login():
+    try:
+        info = GoogleSvc.g_signup(request)
+        user = UserService.check_user_exists(info['email'])
+        if user:
+
+            return render_template('user.html')
+        else:
+
+            return render_template('register.html')
+    except Exception as e:
+        return make_response(jsonify({'error': e.args[0]}), 500)
+
+
+@api_pb.route('/google_signup', methods=['GET'])
+def google_signup_index():
+    auth_url = GoogleSvc.generate_auth_url()
+    return auth_url
+
+
+@app.route('/callback')
+def callback():
+    code = request.args.get('code')
+    user_info = GoogleSvc.get_user_info(code)
+    return render_template('user_info.html', user_info=user_info)
