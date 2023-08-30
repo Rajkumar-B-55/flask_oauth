@@ -13,6 +13,9 @@ class Config:
     GOOGLE_CLIENT_SECRET = os.environ['GOOGLE_CLIENT_SECRET']
     GOOGLE_REDIRECT_URI = os.environ['GOOGLE_REDIRECT_URI']
 
+    LINKEDIN_CLIENT_ID = os.environ['LINKEDIN_CLIENT_ID']
+    LINKEDIN_CLIENT_SECRET = os.environ['LINKEDIN_CLIENT_SECRET']
+
 
 "our own config to load env"
 config = Config()

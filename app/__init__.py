@@ -1,10 +1,9 @@
 from flask import Flask
 from flask_bcrypt import Bcrypt
-
+from flask_oauthlib.client import OAuth
 from app.models import SQLConfig
-
-
-# from config import config
+# from app.utils.linkedin_oauth_base import LinkedinSvc
+from config import config
 
 
 class AppFactory:
@@ -14,12 +13,20 @@ class AppFactory:
     Holds the sqlalchemy session
     """
     bcrypt = None
+    oauth = None
 
     @classmethod
     def create_app(cls):
         try:
             app = Flask(__name__)
+            app.secret_key = config.SECRET_ACCESS_KEY
+
+            app.config.update({
+                'OAUTHLIB_INSECURE_TRANSPORT': '1'})  # this is to set our environment to https
+            # because OAuth 2.0 only supports https environments
+
             cls.bcrypt = Bcrypt(app)
+            cls.oauth = OAuth(app)
 
             # blueprint registration
 
@@ -28,6 +35,8 @@ class AppFactory:
 
             # Initialize SQlAlchemy
             SQLConfig.initialize()
+
+            # LinkedinSvc(cls.oauth)
 
             with app.app_context():
                 pass
