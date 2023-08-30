@@ -1,7 +1,7 @@
 import logging
 
 from flask import Blueprint
-from flask import make_response, jsonify, render_template, request, redirect, session
+from flask import make_response, jsonify, render_template, request, redirect, session, url_for
 
 from app.models.model import User
 from app.services.user_svc import UserService
