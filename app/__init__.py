@@ -2,6 +2,7 @@ from flask import Flask
 from flask_bcrypt import Bcrypt
 
 from app.models import SQLConfig
+from config import config
 
 
 # from config import config
@@ -19,6 +20,7 @@ class AppFactory:
     def create_app(cls):
         try:
             app = Flask(__name__)
+            app.secret_key = config.SECRET_ACCESS_KEY
 
             app.config.update({
                                   'OAUTHLIB_INSECURE_TRANSPORT': '1'})  # this is to set our environment to https

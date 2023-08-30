@@ -5,9 +5,8 @@ from flask import make_response, jsonify, render_template, request, redirect, se
 
 from app.models.model import User
 from app.services.user_svc import UserService
-from app.utils.google_signup import GoogleSvc
-from app.utils.new_g import GoogleSvcAPI
 from app.utils.jwt_helper import access_token_generator, refresh_token_generator
+from app.utils.google_oauth_svc import GoogleSvcAPI
 
 api_pb = Blueprint('api_bp', __name__, url_prefix='/v1', template_folder='D:/Oauth G&L/app/templates')
 # logger
@@ -80,43 +79,6 @@ def user_login():
         return make_response(jsonify({'error': e.args[0]}))
 
 
-# @api_pb.route('/google_sign_up', methods=['GET'])
-# def g_login():
-#     try:
-#         return redirect(GoogleSvc.requested_uri())
-#     except Exception as e:
-#         return make_response(jsonify({'error': e.args[0]}), 500)
-
-
-# @api_pb.route('/verify_google_sign_up', methods=['GET'])
-# def verify_g_login():
-#     try:
-#         info = GoogleSvc.g_signup(request)
-#         user = UserService.check_user_exists(info['email'])
-#         if user:
-
-#             return render_template('user.html')
-#         else:
-
-#             return render_template('register.html')
-#     except Exception as e:
-#         return make_response(jsonify({'error': e.args[0]}), 500)
-
-
-#
-# @api_pb.route('/google_signup', methods=['GET'])
-# def google_signup_index():
-#     auth_url = GoogleSvc.generate_auth_url()
-#     return auth_url
-#
-#
-# @api_pb.route('/callback')
-# def callback():
-#     code = request.args.get('code')
-#     user_info = GoogleSvc.user_info(code)
-#     return render_template('user_info.html', user_info=user_info)
-
-
 @api_pb.route("/google_signup")
 def google_signup():
     try:
@@ -134,8 +96,23 @@ def google_callback():
         code = request.args.get("code")
         response = GoogleSvcAPI.callback(code)
 
+        # session storage
         session["google_id"] = response.get("sub")
-        session["name"] = response.get("name")
+        session['first_name'] = response.get('given_name')
+        session['family_name'] = response.get('family_name')
+        session['email'] = response.get('email')
+
+        email = response['email']
+        user_exists = UserService.check_user_exists(email)
+        if not user_exists:
+            user_dict_google = {
+                'first_name': response['given_name'],
+                'last_name': response['family_name'],
+                'email': response['email']
+            }
+            new_user = UserService.add_user(user_dict_google['first_name'], user_dict_google['last_name'],
+                                            user_dict_google['email'], password='google_admin')
+            logger.info(new_user)
         return redirect("/v1/protected_area")
     except Exception as e:
         return make_response(jsonify({'error': e.args[0]}), 500)
@@ -144,10 +121,28 @@ def google_callback():
 @api_pb.route('/protected_area')
 @GoogleSvcAPI.login_is_required
 def protected_area():
-    return f"Hello {session['name']}! <br/> <a href='/logout'><button>Logout</button></a>"
+    try:
+        if session:
+            user_data = {
+                'first_name': session['first_name'],
+                'last_name': session['family_name'],
+                'email': session['email']
+            }
+            return render_template('user_profile.html', user_data=user_data)
+        else:
+            raise Exception
+    except Exception as e:
+        return make_response(jsonify({'error': e.args[0]}), 500)
 
 
 @api_pb.route('/logout')
 def logout():
-    session.clear()
-    return redirect('v1/home')
+    try:
+        if session:
+            session.clear()
+            print('session is cleared')
+            return redirect('/v1/home')
+        else:
+            return redirect('/v1/home')
+    except Exception as e:
+        return make_response(jsonify({'error': e.args[0]}), 500)
