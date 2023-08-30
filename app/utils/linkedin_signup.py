@@ -7,8 +7,8 @@ app.secret_key = 'your_secret_key'  # Replace with your secret key
 oauth = OAuth(app)
 linkedin = oauth.remote_app(
     'linkedin',
-    consumer_key='78mtgl2bd3fqcd',
-    consumer_secret='8PIhN5Ald022KlA0',
+    consumer_key='787qjm4vv4sf0a',
+    consumer_secret='kN1j1TAx9c557ZeW',
     request_token_params={
         'scope': 'r_liteprofile r_emailaddress',  # Requested permissions
     },
@@ -47,9 +47,14 @@ def authorized():
             request.args['error_description']
         )
     session['linkedin_token'] = (resp['access_token'], '')
-    me = linkedin.get('me', token=resp['access_token'])
+    me = linkedin.get('me', token=(resp['access_token'], ''))  # Pass the token as a tuple
     return 'Logged in as: ' + me.data['localizedFirstName']
 
 
+@linkedin.tokengetter
+def get_linkedin_oauth_token():
+    return session.get('linkedin_token')
+
+
 if __name__ == '__main__':
-    app.run(host='localhost', port=5000)
+    app.run(host='0.0.0.0', port=5000)
