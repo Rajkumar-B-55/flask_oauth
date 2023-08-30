@@ -43,6 +43,7 @@ class GoogleSvcAPI:
                 id_token=token_data["id_token"],
                 request=google.auth.transport.requests.Request(),
                 audience=cls.CLIENT_ID,
+                clock_skew_in_seconds=10
             )
             return id_info
         except Exception as e:

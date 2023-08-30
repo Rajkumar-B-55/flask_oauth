@@ -5,12 +5,47 @@ from flask import make_response, jsonify, render_template, request, redirect, se
 
 from app.models.model import User
 from app.services.user_svc import UserService
-from app.utils.jwt_helper import access_token_generator, refresh_token_generator
 from app.utils.google_oauth_svc import GoogleSvcAPI
+from app.utils.jwt_helper import access_token_generator, refresh_token_generator
+from config import config
+from app import AppFactory
 
 api_pb = Blueprint('api_bp', __name__, url_prefix='/v1', template_folder='D:/Oauth G&L/app/templates')
 # logger
 logger = logging.getLogger(__name__)
+
+oauth = AppFactory.oauth
+consumer_key = config.LINKEDIN_CLIENT_ID
+consumer_secret = config.LINKEDIN_CLIENT_SECRET
+
+request_token_params = {
+    'scope': 'openid,profile,email,w_member_social'
+}
+base_url = 'https://api.linkedin.com/v2/'
+request_token_url = None
+access_token_method = 'POST'
+access_token_url = 'https://www.linkedin.com/oauth/v2/accessToken'
+authorize_url = 'https://www.linkedin.com/oauth/v2/authorization'
+
+linkedin_con = oauth.remote_app(
+
+    name='linkedin_oauth',
+    consumer_key=consumer_key,
+    consumer_secret=consumer_secret,
+    request_token_params=request_token_params,
+    base_url=base_url,
+    request_token_url=request_token_url,
+    access_token_method=access_token_method,
+    access_token_url=access_token_url,
+    authorize_url=authorize_url,
+)
+
+linkedin = linkedin_con
+
+
+@linkedin.tokengetter
+def get_linkedin_oauth_token():
+    return session.get('linkedin_token')
 
 
 @api_pb.route('/healthcheck', methods=['GET'])
@@ -139,10 +174,82 @@ def protected_area():
 def logout():
     try:
         if session:
+            session.pop('linkedin_token', None)
             session.clear()
             print('session is cleared')
             return redirect('/v1/home')
         else:
             return redirect('/v1/home')
+    except Exception as e:
+        return make_response(jsonify({'error': e.args[0]}), 500)
+
+
+# linkedin
+@api_pb.route('/linkedin_signup')
+def linkedin_signup():
+    try:
+        if 'linkedin_token' in session:
+            session.clear()
+            return redirect('/v1/home')
+        else:
+            return redirect('/v1/linkedin_login')
+
+    except Exception as e:
+        return make_response(jsonify({'error': e.args[0]}), 500)
+
+
+@api_pb.route('/linkedin_login')
+def linkedin_login():
+    try:
+        return linkedin.authorize(callback=url_for("api_bp.linkedin_authorized", _external=True))
+    except Exception as e:
+        print(e)
+        return make_response(jsonify({'error': e.args[0]}), 500)
+
+
+@api_pb.route('/linkedin_login/authorized')
+def linkedin_authorized():
+    try:
+
+        response = linkedin.authorized_response()
+        if response is None or response['access_token'] is None:
+            return make_response('Access denied: reason={} error={}'.format(
+                request.args['error_reason'],
+                request.args['error_description']
+            ))
+        session['linkedin_token'] = (response['access_token'], '')
+
+        me = linkedin.get('userinfo/')
+
+        if me.data['email']:
+            email = me.data['email']
+            first_name = me.data['given_name']
+            last_name = me.data['family_name']
+            user_exists = UserService.check_user_exists(email)
+            if not user_exists:
+                new_user = UserService.add_user(
+                    first_name=first_name,
+                    last_name=last_name,
+                    email=email,
+                    password="linkedin_admin"
+                )
+                logger.info(new_user)
+                return render_template('index.html')
+            else:
+                user_data = {
+                    'first_name': first_name,
+                    'last_name': last_name,
+                    'email': email,
+                }
+                return render_template('user_profile.html', user_data=user_data)
+    except Exception as e:
+        return make_response(jsonify({'error': e.args[0]}), 500)
+
+
+@api_pb.route('linkedin/logout')
+def linkedin_logout():
+    try:
+        session.pop('linkedin_token', None)
+        return redirect(url_for('index'))
     except Exception as e:
         return make_response(jsonify({'error': e.args[0]}), 500)
