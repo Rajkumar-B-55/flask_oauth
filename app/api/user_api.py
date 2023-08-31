@@ -53,6 +53,11 @@ def healthcheck():
     return '<h1>Health check Success</h1>'
 
 
+@api_pb.route('/')
+def index():
+    return redirect('home')
+
+
 @api_pb.route('/home')
 def home():
     return render_template('index.html')
