@@ -20,12 +20,19 @@
       *:after {
         padding: 0;
         margin: 0;
-        box-sizing: content-box;
+        box-sizing: border-box;
       }
-      body {
-        background-color: #e8e7f0;
+      .fa {
+        font-family: FontAwesome !important;
       }
-      .registerform {
+
+      .loginform .shape {
+        height: 200px;
+        width: 200px;
+        position: absolute;
+        border-radius: 50%;
+      }
+      .loginform {
         width: 430px;
         height: 520px;
         position: absolute;
@@ -33,16 +40,14 @@
         left: 50%;
         top: 50%;
       }
-      .registerform {
-        height: 200px;
-        width: 200px;
-        position: absolute;
-        border-radius: 50%;
+      .form {
+        display: flex;
+        flex-direction: column;
+        row-gap: 30px;
       }
-      form {
-        height: 520px;
-        width: 400px;
-        background-color: rgba(4, 221, 250, 0.13);
+      .form {
+        width: 500px;
+        background-color: rgba(255, 255, 255, 0.13);
         position: absolute;
         transform: translate(-50%, -50%);
         top: 50%;
@@ -50,115 +55,129 @@
         border-radius: 10px;
         backdrop-filter: blur(10px);
         border: 2px solid rgba(255, 255, 255, 0.1);
-        box-shadow: 0 0 40px rgba(8, 7, 16, 0.6);
-        padding: 45px;
+        box-shadow: 0 0 40px rgba(52, 44, 124, 0.6);
+        padding: 35px;
       }
-      form * {
+      .form * {
         font-family: "Poppins", sans-serif;
-        color: #f7f7f7;
+        color: #313120;
         letter-spacing: 0.5px;
         outline: none;
-        border: none;
       }
-      form h2 {
-        font-size: 25px;
+      .form h3 {
+        font-size: 32px;
         font-weight: 500;
         line-height: 42px;
         text-align: center;
       }
-     input{
-        width: 75%;
-        padding: 10px;
-        margin-bottom: 5px;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        font-size: 15px;
-      }
       label {
         display: block;
-        margin-top: 30px;
+        font-size: 16px;
         font-weight: 500;
-        font-size: 14px;
-        font-weight: bold;
-        margin-bottom: 6px;
       }
-      button {
-        margin-top: 30px;
+
+      body {
+        background-color: #ecf3f5;
+      }
+      input {
+        display: block;
+        height: 50px;
+        width: 100%;
+        background-color: rgba(255, 255, 255, 0.07);
+        border-radius: 10px;
+        padding: 0 10px;
+        margin-top: 8px;
+        font-size: 14px;
+        font-weight: 300;
+        border: 1px solid rgb(184, 184, 184);
+      }
+      .form button {
         width: 100%;
         background-color: #ffffff;
-        color: #080710;
+        color: #3f3f3f;
         padding: 15px 0;
         font-size: 18px;
         font-weight: 600;
-        border-radius: 5px;
         cursor: pointer;
+        border-radius: 10px;
+        border: none;
+        background: linear-gradient(#5976ca, #23a2f6);
+      }
+      ::placeholder {
+        color: #756262;
+      }
+      .social {
+        display: flex;
+        justify-content: center;
+        column-gap: 40px;
       }
       .social div {
-        display: block;
-        width: 2000px;
-        max-width: 400px;
-        min-width: min-content;
-        border-radius: 3px;
-        padding: 5px 10px 10px 5px;
-        text-align: center;
-        color: #1a1a1b;
+        border: 1px solid #bbbbbb;
+        padding: 12px;
+        border-radius: 10px;
       }
-      .social .go {
+      .social .google {
         background-color: #dfc0c000;
       }
       .social div:hover {
         background-color: rgba(252, 252, 252, 0.47);
       }
-      .social .li {
-        margin-left: 25px;
-      }
-      .social i {
-        margin-right: 5px;
-      }
       .social a {
         text-decoration: none;
       }
+      .newaccount {
+        text-align: center;
+        padding: 5px 10px 10px 5px;
+      }
     </style>
   </head>
+  <script src="https://use.fontawesome.com/35fd78c6eb.js"></script>
   <body>
-    <form action="/v1/register" method="post">
-      <h2>Create Your Free Account</h2>
-
-      <label for="firstname">Firstname:</label>
-      <input
-        type="text"
-        placeholder="Your First name here..."
-        id="firstname"
-        required
-      />
-      <label>Lastname:</label>
-      <input
-        type="text"
-        placeholder="Your Last name here..."
-        id="lastname"
-        required
-      />
-      <label>Email:</label>
-      <input
-        id="email"
-        type="email"
-        placeholder="Your Email here..."
-        required
-      />
-      <label>Password:</label>
-      <input
-        id="password"
-        type="password"
-        placeholder="Your Secret here..."
-        required
-      />
+    <form action="/v1/register" method="post" class="form">
+      <h3>Create Your Free Account</h3>
+      <div>
+        <label for="firstname">Firstname:</label>
+        <input
+          type="text"
+          placeholder="Your First name here..."
+          id="firstname"
+          required
+        />
+      </div>
+      <div>
+        <label>Lastname:</label>
+        <input
+          type="text"
+          placeholder="Your Last name here..."
+          id="lastname"
+          required
+        />
+      </div>
+      <div>
+        <label>Email:</label>
+        <input
+          id="email"
+          type="email"
+          placeholder="Your Email here..."
+          required
+        />
+      </div>
+      <div>
+        <label>Password:</label>
+        <input
+          id="password"
+          type="password"
+          placeholder="Your Secret here..."
+          required
+        />
+      </div>
       <button type="submit">Sign up</button>
       <div class="social">
         <div class="google">
-          <a href="#"><i class="fab fa-google">Sign Up Google</i></a>
+          <a href="#"><i class="fa fa-google"></i> Sign Up Google</a>
         </div>
         <div class="linkedin">
-          <a href="#"><i class="fa fa-linkedin">Sign Up Linkedin</i> </a>
+          <a href="#"><i class="fa fa-linkedin"></i> Sign Up Linkedin</a>
         </div>
       </div>
     </form>
