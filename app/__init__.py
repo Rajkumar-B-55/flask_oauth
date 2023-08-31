@@ -9,8 +9,6 @@ from config import config
 class AppFactory:
     """
     AppFactory for Flask
-    Holds the flask app instance
-    Holds the sqlalchemy session
     """
     bcrypt = None
     oauth = None
@@ -21,9 +19,11 @@ class AppFactory:
             app = Flask(__name__)
             app.secret_key = config.SECRET_ACCESS_KEY
 
+            # OAUTHLIB_INSECURE_TRANSPORT
+            # this is to avoid issue OAuth 2.0 only supports https
+            # environments
             app.config.update({
-                'OAUTHLIB_INSECURE_TRANSPORT': '1'})  # this is to set our environment to https
-            # because OAuth 2.0 only supports https environments
+                'OAUTHLIB_INSECURE_TRANSPORT': '1'})
 
             cls.bcrypt = Bcrypt(app)
             cls.oauth = OAuth(app)
