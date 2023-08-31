@@ -110,12 +110,16 @@
       }
 
       .login-btn button {
-        text-align: right;
-        color: #fff;
+        margin-top: 50px;
+        width: 100%;
+        text-align: center;
+        background-color: #ffffff;
+        font-family: "Open Sans", sans-serif;
         font-size: 16px;
-        padding: 12px 35px;
+        padding: 15px 0;
         border-radius: 50px;
         display: inline-block;
+        cursor: pointer;
         border: 0;
         outline: 0;
         box-shadow: 0px 4px 20px 0px #49c628a6;
@@ -153,7 +157,9 @@
         color: #ffffff;
         transition: all 0.3s ease;
       }
-
+      ::placeholder {
+        color: #e5e5e5;
+      }
       .box-form .google i,
       .box-form .linkedin i {
         text-align: left;
@@ -171,28 +177,12 @@
   </head>
   <body>
     <div class="box-form">
-      <div class="left">
-        <div class="overlay">
-          <h1>Welcome</h1>
-          <h4>SignUp with SocialMedia</h4>
-          <div class="google">
-            <a href="/v1/google_signup"
-              ><i class="fa fa-google" aria-hidden="true"></i>SignUp Google</a
-            >
-          </div>
-          <br />
-          <div class="linkedin">
-            <a href="/v1/linkedin_signup"
-              ><i class="fa fa-linkedin" aria-hidden="true"></i>SignUp
-              Linkedin</a
-            >
-          </div>
-        </div>
-      </div>
-
       <div class="right">
         <h5>Login</h5>
-          <p>Don't have account ? <a href="/v1/register">Create your free Account</a></p>
+        <p>
+          Don't have account ?
+          <a href="/v1/register">Create your free Account</a>
+        </p>
         <form method="POST" action="/v1/login">
           <div class="inputs">
             <label>Email</label>
@@ -206,7 +196,7 @@
             <label>Password</label>
             <br />
             <input name="password" type="password" required />
-            <br>
+            <br />
           </div>
 
           <br /><br />
