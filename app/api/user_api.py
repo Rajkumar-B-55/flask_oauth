@@ -65,7 +65,7 @@ def home():
 
 @api_pb.route('/register_template')
 def register_template():
-    return redirect('register')
+    return render_template('signup.html')
 
 
 @api_pb.route('/register', methods=['POST', 'GET'])
@@ -89,12 +89,12 @@ def register():
                     # return make_response(f' user already exists with email: {email}', 209)
                     return render_template('user_exists.html', email=email)
         else:
-            return render_template('register.html')
+            return render_template('signup.html')
     except Exception as e:
         return make_response(jsonify({'error': str(e)}))
 
 
-@api_pb.route('/login', methods=['POST'])
+@api_pb.route('/login', methods=['POST', 'GET'])
 def user_login():
     try:
         if request.method == 'POST' and 'email' in request.form and 'password' in request.form:
@@ -105,18 +105,31 @@ def user_login():
             user_check = UserService.check_user_exists(email)
             if user_check is not None:
                 is_matched = UserService.verify_password(user_check.password, password)
+
                 if is_matched:
                     access_token, refresh_token = access_token_generator(user_check), refresh_token_generator(
                         user_check)
-                    response_payload = {'access_token': access_token, 'refresh_token': refresh_token}
-                    jsonify(response_payload)
+                    resp = {'access_token': access_token, 'refresh_token': refresh_token}
+                    payload = jsonify(resp)  # need to check how to use
                     return render_template('user_profile.html', user_data=user_check)
                 else:
-                    return "Please check your entered password"
+                    return render_template('user_exists.html', fromlogin=" ")
+
             else:
-                return redirect('/v1/home')
+                return redirect('home')
     except Exception as e:
         return make_response(jsonify({'error': e.args[0]}))
+
+
+@api_pb.route("/google_signin")
+def google_signin():
+    try:
+        auth_url = GoogleSvcAPI.login()
+        if auth_url is not None:
+            return redirect(auth_url)
+        return Exception
+    except Exception as e:
+        return make_response(jsonify({'error': e.args[0]}), 500)
 
 
 @api_pb.route("/google_signup")
@@ -153,7 +166,9 @@ def google_callback():
             new_user = UserService.add_user(user_dict_google['first_name'], user_dict_google['last_name'],
                                             user_dict_google['email'], password='google_admin')
             logger.info(new_user)
-        return redirect("/v1/protected_area")
+            return redirect("/v1/protected_area")
+        else:
+            return redirect('/v1/protected_area')
     except Exception as e:
         return make_response(jsonify({'error': e.args[0]}), 500)
 
@@ -185,6 +200,19 @@ def logout():
             return redirect('/v1/home')
         else:
             return redirect('/v1/home')
+    except Exception as e:
+        return make_response(jsonify({'error': e.args[0]}), 500)
+
+
+@api_pb.route('/linkedin_signin')
+def linkedin_signin():
+    try:
+        if 'linkedin_token' in session:
+            session.clear()
+            return redirect('/v1/home')
+        else:
+            return redirect('/v1/linkedin_login')
+
     except Exception as e:
         return make_response(jsonify({'error': e.args[0]}), 500)
 

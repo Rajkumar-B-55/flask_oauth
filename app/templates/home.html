@@ -8,36 +8,54 @@
   <script src="https://use.fontawesome.com/35fd78c6eb.js"></script>
 
   <body>
+    <!-- <script>
+      function myFunction() {
+        alert("USer Not Found!.SignUp");
+      }
+    </script> -->
+
     <div class="loginform">
       <div class="shape"></div>
       <div class="shape"></div>
     </div>
-    <form action="" method="POST" class="form">
+    <form action="login" method="POST" class="form">
       <h3>Sign In</h3>
       <div>
         <label for="username">Username</label>
-        <input type="text" placeholder="Email" id="username" />
+        <input
+          type="text"
+          placeholder="Email"
+          id="username"
+          required
+          name="email"
+        />
       </div>
       <div>
         <label for="password">Password</label>
-        <input type="password" placeholder="Password" id="password" />
+        <input
+          type="password"
+          placeholder="Password"
+          id="password"
+          required
+          name="password"
+        />
       </div>
-      <button>Log In</button>
+      <button type="submit">Log In</button>
       <div class="social">
         <div class="google">
-          <a href="#"
+          <a href="/v1/google_signin"
             ><i class="fa fa-google" aria-hidden="true"></i> Sign In Google</a
           >
         </div>
         <div class="linkedin">
-          <a href="#"
+          <a href="/v1/linkedin_signin"
             ><i class="fa fa-linkedin" aria-hidden="true"></i> Sign In
             Linkedin</a
           >
         </div>
       </div>
       <div class="newaccount">
-        Don't have an account? <a href="/v1/register_template">Sign up now!</a>
+        Don't have an account? <a href="register_template">Sign up now!</a>
       </div>
     </form>
     <style media="screen">

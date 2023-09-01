@@ -7,10 +7,7 @@ class UserService:
     def check_user_exists(cls, usr):
         try:
             user = User.get_by_username(usr)
-            if not user:
-                return None
-            else:
-                return user
+            return None if not user else user
         except Exception as e:
             raise e
 

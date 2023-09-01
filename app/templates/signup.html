@@ -123,7 +123,7 @@
   </head>
   <script src="https://use.fontawesome.com/35fd78c6eb.js"></script>
   <body>
-    <form action="/v1/register" method="post" class="form">
+    <form action="register" method="POST" class="form">
       <h3>Create Your Free Account</h3>
       <div>
         <label for="firstname">Firstname:</label>
@@ -132,6 +132,7 @@
           placeholder="Your First name here..."
           id="firstname"
           required
+          name="firstname"
         />
       </div>
       <div>
@@ -141,6 +142,7 @@
           placeholder="Your Last name here..."
           id="lastname"
           required
+          name="lastname"
         />
       </div>
       <div>
@@ -150,6 +152,7 @@
           type="email"
           placeholder="Your Email here..."
           required
+          name="email"
         />
       </div>
       <div>
@@ -159,6 +162,7 @@
           type="password"
           placeholder="Your Secret here..."
           required
+          name="password"
         />
       </div>
       <button type="submit">Sign up</button>
