@@ -3,43 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Log In</title>
-  </head>
-  <script src="https://use.fontawesome.com/35fd78c6eb.js"></script>
-
-  <body>
-    <div class="loginform">
-      <div class="shape"></div>
-      <div class="shape"></div>
-    </div>
-    <form action="" method="POST" class="form">
-      <h3>Sign In</h3>
-      <div>
-        <label for="username">Username</label>
-        <input type="text" placeholder="Email" id="username" />
-      </div>
-      <div>
-        <label for="password">Password</label>
-        <input type="password" placeholder="Password" id="password" />
-      </div>
-      <button>Log In</button>
-      <div class="social">
-        <div class="google">
-          <a href="#"
-            ><i class="fa fa-google" aria-hidden="true"></i> Sign In Google</a
-          >
-        </div>
-        <div class="linkedin">
-          <a href="#"
-            ><i class="fa fa-linkedin" aria-hidden="true"></i> Sign In
-            Linkedin</a
-          >
-        </div>
-      </div>
-      <div class="newaccount">
-        Don't have an account? <a href="/v1/register_template">Sign up now!</a>
-      </div>
-    </form>
+    <title>Sign Up</title>
     <style media="screen">
       *,
       *:before,
@@ -134,7 +98,8 @@
       }
       .social {
         display: flex;
-        justify-content: space-around;
+        justify-content: center;
+        column-gap: 40px;
       }
       .social div {
         border: 1px solid #bbbbbb;
@@ -142,7 +107,7 @@
         border-radius: 10px;
       }
       .social .google {
-        background-color: #ec4c4c00;
+        background-color: #dfc0c000;
       }
       .social div:hover {
         background-color: rgba(252, 252, 252, 0.47);
@@ -155,5 +120,60 @@
         padding: 5px 10px 10px 5px;
       }
     </style>
+  </head>
+  <script src="https://use.fontawesome.com/35fd78c6eb.js"></script>
+  <body>
+    <form action="/v1/register" method="post" class="form">
+      <h3>Create Your Free Account</h3>
+      <div>
+        <label for="firstname">Firstname:</label>
+        <input
+          type="text"
+          placeholder="Your First name here..."
+          id="firstname"
+          required
+        />
+      </div>
+      <div>
+        <label>Lastname:</label>
+        <input
+          type="text"
+          placeholder="Your Last name here..."
+          id="lastname"
+          required
+        />
+      </div>
+      <div>
+        <label>Email:</label>
+        <input
+          id="email"
+          type="email"
+          placeholder="Your Email here..."
+          required
+        />
+      </div>
+      <div>
+        <label>Password:</label>
+        <input
+          id="password"
+          type="password"
+          placeholder="Your Secret here..."
+          required
+        />
+      </div>
+      <button type="submit">Sign up</button>
+      <div class="social">
+        <div class="google">
+          <a href="/v1/google_signup"
+            ><i class="fa fa-google"></i> Sign Up Google</a
+          >
+        </div>
+        <div class="linkedin">
+          <a href="/v1/linkedin_signup"
+            ><i class="fa fa-linkedin"></i> Sign Up Linkedin</a
+          >
+        </div>
+      </div>
+    </form>
   </body>
 </html>

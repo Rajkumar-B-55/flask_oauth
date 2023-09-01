@@ -60,7 +60,7 @@ def index():
 
 @api_pb.route('/home')
 def home():
-    return render_template('index.html')
+    return render_template('home.html')
 
 
 @api_pb.route('/register_template')
